@@ -1,8 +1,4 @@
-#**Behavioral Cloning** 
-
-##Writeup Template
-
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+**Behavioral Cloning** 
 
 ---
 
@@ -26,51 +22,99 @@ The goals / steps of this project are the following:
 [image6]: ./examples/placeholder_small.png "Normal Image"
 [image7]: ./examples/placeholder_small.png "Flipped Image"
 
-## Rubric Points
-###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
-
+***[Rubric](https://review.udacity.com/#!/rubrics/432/view) Points***
 ---
 ###Files Submitted & Code Quality
 
-####1. Submission includes all required files and can be used to run the simulator in autonomous mode
-
-My project includes the following files:
+Files included:
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
-* writeup_report.md or writeup_report.pdf summarizing the results
 
-####2. Submission includes functional code
+
+***Running The Code***
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
+
 ```sh
 python drive.py model.h5
 ```
 
-####3. Submission code is usable and readable
+The model.py file contains the code for training and saving the convolution neural network.
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+---
 
-###Model Architecture and Training Strategy
+**Training Strategy**
 
-####1. An appropriate model architecture has been employed
+---
+***Preprocessing and Normalization***
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+1. To start, I used Keras to crop my images. 
+```Cropping2D(cropping=((70, 25), (0, 0)))```
+This removes the top 70 pixels from the image, as well as the bottom 25. This cuts off excess "useless" data and helps the model to focus and train only on the curvature of the road, as opposed to trees or the hood of the car. 
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+2. Secondly, I used the formula: ```x/255.0 - 0.5``` to normalize my image set. This helps to keep the images similar and reduce variances. 
+---
 
-####2. Attempts to reduce overfitting in the model
+My model architecture is based off the NVIDIA End To End Learning For Self driving cars paper, documented [Here](http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf)
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+***Final Model Architecture - NVIDIA (Link Above)***
 
-####3. Model parameter tuning
+After fiddling with simple architectures and trying to make the most of them-- and nothing cutting it in terms of the result I wanted, I decided to use a tried and true architecture. I settled on the NVIDIA architecture because of its relative simplicity, and frankly, because it works favorably for the end goal of keeping a car on the track.
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
 
-####4. Appropriate training data
+|Layer           | Details                          |
+|:--------------:|:--------------------------------:|
+|Normalization | x/255.0 - 0.5 - Input shape: 160x320x3|
+|Convolution 24x5x5 | 2x2 subsample, ReLU activation| 
+|Convolution 36x5x5 | 2x2 subsample, ReLU activation|
+|Convolution 48x5x5 | 2x2 subsample, ReLU activation|
+|Convolution 64x3x3 | ReLU activation|
+|Convolution 64x3x3 | ReLU activation|
+|Flat Convolution| ... |
+|Fully Connected | Dense (100) | 
+|Dropout Layer | 25% Probability |
+|Fully Connected | Dense (50) | 
+|Dropout Layer | 25% Probability |
+|Fully Connected | Dense (10) | 
+|Dropout Layer | 25% Probability |
+|Fully Connected | Dense (1) |
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+
+***Reducing Overfitting In The Model***
+
+ To reduce overfitting, I introduced dropout layers after each fully connected layer. In running the model, this seems to be effective.
+ 
+ ***Output Snippet With Dropout Layers:***
+ ```Epoch 3/10
+25s - loss: 0.0177 - val_loss: 0.0161
+Epoch 4/10
+25s - loss: 0.0167 - val_loss: 0.0159
+```
+
+***Output Snippet Without Dropout Layers***
+```Epoch 3/10
+27s - loss: 0.0107 - val_loss: 0.0151
+Epoch 4/10
+26s - loss: 0.0127 - val_loss: 0.0169
+```
+
+As can be seen above: without dropout layers, the training loss would be much lower than the validation loss, as well as the validation loss increasing with each epoch, as opposed to decreasing as it should.
+
+
+***Model Parameter Tuning***
+
+The model used an adam optimizer, so the learning rate was not tuned manually.
+
+
+***Training Data Selection***
+
+The training data used was the sample set provided by Udacity, linked [Here](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip). I found that this data was more "complete" and produced better results than the set I obtained by running the simulator myself. When using training data i obtained myself, The car had a tendency to be far too close to the outer edge of the track, often running off the track. 
+
+***Multiple Camera Angles***
+As detailed in my ```model.py``` code, I used all camera angles to increase the amount of training data used. This data included images from the center, left, and right cameras:
+
+###INSERT SAMPLE PICS FROM CENTER,LEFT, AND RIGHT CAMERAS.
 
 For details about how I created the training data, see the next section. 
 
