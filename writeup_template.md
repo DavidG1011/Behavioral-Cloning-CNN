@@ -14,13 +14,10 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image1]: ./Example_Images/left.jpg "Left"
+[image2]: ./Example_Images/center.jpg "Center"
+[image3]: ./Example_Images/right.jpg "Right"
+
 
 ***[Rubric](https://review.udacity.com/#!/rubrics/432/view) Points***
 ---
@@ -65,7 +62,7 @@ After fiddling with simple architectures and trying to make the most of them-- a
 
 |Layer           | Details                          |
 |:--------------:|:--------------------------------:|
-|Normalization | x/255.0 - 0.5 - Input shape: 160x320x3|
+|Normalization | x/255.0 - 0.5 , Input shape: 160x320x3|
 |Convolution 24x5x5 | 2x2 subsample, ReLU activation| 
 |Convolution 36x5x5 | 2x2 subsample, ReLU activation|
 |Convolution 48x5x5 | 2x2 subsample, ReLU activation|
@@ -84,6 +81,8 @@ After fiddling with simple architectures and trying to make the most of them-- a
 ***Reducing Overfitting In The Model***
 
  To reduce overfitting, I introduced dropout layers after each fully connected layer. In running the model, this seems to be effective.
+ 
+ Some empirical data:
  
  ***Output Snippet With Dropout Layers:***
  ```Epoch 3/10
@@ -111,28 +110,35 @@ The model used an adam optimizer, so the learning rate was not tuned manually.
 
 The training data used was the sample set provided by Udacity, linked [Here](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip). I found that this data was more "complete" and produced better results than the set I obtained by running the simulator myself. When using training data i obtained myself, The car had a tendency to be far too close to the outer edge of the track, often running off the track. 
 
+
 ***Multiple Camera Angles***
-As detailed in my ```model.py``` code, I used all camera angles to increase the amount of training data used. This data included images from the center, left, and right cameras:
 
-###INSERT SAMPLE PICS FROM CENTER,LEFT, AND RIGHT CAMERAS.
+As detailed in my ```model.py``` code, I used all camera angles to increase the amount of training data used and make turning easier. I found this to be one of the most important changes to my network. It was a night and day transformation in my turning performance. 
 
-For details about how I created the training data, see the next section. 
+***Example Images***
 
-###Model Architecture and Training Strategy
+Here is a captured set from the left, center, and right cameras at the same moment on the track:
 
-####1. Solution Design Approach
+Left:
 
-The overall strategy for deriving a model architecture was to ...
+![alt text][image1]
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+Center:
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+![alt text][image2]
 
-To combat the overfitting, I modified the model so that ...
+Right:
 
-Then I ... 
+![alt text][image3]
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+
+***The Training Strategy: Trial And Error... Plenty of Error***
+
+*1. The first step in designing this model was to obtain a large set of training data. To do this, I first set off to obtain the data from my own driving on the track. I feel I did well enough at staying close to the center of the track to give the optimal training data to my model.
+
+*2. If it was good enough driving was not yet apparent to me, because my model was far too simple to utilize even the best driver data in the world. My first iteration of my model architecture probably shouldn't have even been used-- but I wanted a good baseline for how complex I needed my model to be to achieve the outcome of staying on the track effectively. My first iteration was simply:
+```
+
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
