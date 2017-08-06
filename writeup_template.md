@@ -133,9 +133,9 @@ Right:
 
 ***The Training Strategy: Trial And Error... Plenty of Error***
 
-*1. The first step in designing this model was to obtain a large set of training data. To do this, I first set off to obtain the data from my own driving on the track. I feel I did well enough at staying close to the center of the track to give the optimal training data to my model.
+* 1. The first step in designing this model was to obtain a large set of training data. To do this, I first set off to obtain the data from my own driving on the track. I feel I did well enough at staying close to the center of the track to give the optimal training data to my model.
 
-*2. If it was good enough driving was not yet apparent to me, because my model was far too simple to utilize even the best driver data in the world. My first iteration of my model architecture probably shouldn't have even been used-- but I wanted a good baseline for how complex I needed my model to be to achieve the outcome of staying on the track effectively. My first iteration was simply:
+* 2. If it was good enough driving was not yet apparent to me, because my model was far too simple to utilize even the best driver data in the world. My first iteration of my model architecture probably shouldn't have even been used-- but I wanted a good baseline for how complex I needed my model to be to achieve the outcome of staying on the track effectively. My first iteration was simply:
 ```
 
 
