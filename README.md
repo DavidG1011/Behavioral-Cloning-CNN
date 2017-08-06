@@ -211,10 +211,12 @@ With this final model-- detailed above, the vehicle is able to drive autonomousl
 
 ---
 
-Navigating back to the center:
+**Navigating back to the center:**
+
 I have done many test cases where I put the car manually to the outer edge of the track, and in the majority of cases, it can successfully navigate back to the center of the road-- or into the "safe to drive" zones of the road. It has slight difficulty if it goes to the edge during a turn, however.
 
-Reverse Lap:
+**Reverse Lap:**
+
 Putting the car in a clockwise manner around the track, it can still just as easily navigate the entirety of it.
 
 ---
