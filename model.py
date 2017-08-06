@@ -1,24 +1,28 @@
 import csv
-import cv2
 import numpy as np
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential, load_model
-from keras.layers import Flatten, Dense, Conv2D, Activation, MaxPooling2D, Dropout, Lambda, Cropping2D
+from keras.layers import Flatten, Dense, Conv2D, Dropout, Lambda, Cropping2D
 from keras.callbacks import EarlyStopping
-
 import os
 from PIL import Image
 
-
-runModel = True
+# Set which parts of code to run
+runModel = False
 runTest = False
-steerCorrect = 0.2
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-validationStop = 2
 
+# Steering correction for the left and right camera angles, so they are perceived as center angles
+steerCorrect = 0.2
+
+# Mute output of tensorflow GPU info (makes output cleaner)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+# The amount of epochs allowed without any improvement to val_loss
+validationStop = 2
 
 lines = []
 
+# Read in csv data
 with open('Training Data/driving_log.csv') as csvfile:
     read = csv.reader(csvfile)
     for line in read:
@@ -28,15 +32,20 @@ images = []
 steeringAng = []
 
 for line in lines:
+    # Read in center steering angles
     center = float(line[3])
+
+    # Create left and right steering angles based on the center and steering correction value set above
     steerLeft = center + steerCorrect
     steerRight = center - steerCorrect
 
+    # Read in images as arrays
     direct = 'Training Data/'
     imgCenter = np.asarray(Image.open(direct + line[0]))
     imgLeft = np.asarray(Image.open(direct + line[1].strip(" ")))
     imgRight = np.asarray(Image.open(direct + line[2].strip(" ")))
 
+    # Append images and steering angles to two master lists
     images.append(imgCenter)
     images.append(imgLeft)
     images.append(imgRight)
@@ -45,18 +54,28 @@ for line in lines:
     steeringAng.append(steerRight)
 
 
+# Convert lists into arrays and assign them to training labels
 X_train = np.array(images)
 Y_train = np.array(steeringAng)
 
 
-# Create test set
+# Create test set with 20% of the data
 X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, test_size=0.2, random_state=1)
+
+
+# Print off data set characteristics:
+xtrSize = len(X_train)
+xteSize = len(X_test)
+
+print("Number of training examples: ", round(xtrSize * 0.8))
+print("Number of validation examples: ", round(xtrSize * 0.2))
+print("Number of testing examples: ", xteSize)
 
 
 # Define early stopping procedure when validation loss is not improving
 early_stop = EarlyStopping(monitor='val_loss', patience=validationStop)
 
-# 160,320,3
+# Original image shape (160,320,3)
 if runModel:
     # Model Arc - NVIDIA with dropout to reduce overfitting
     model = Sequential()
@@ -76,13 +95,17 @@ if runModel:
     model.add(Dropout(0.25))
     model.add(Dense(1))
 
+    # Select compiler paramaters
     model.compile(loss='mse', optimizer='adam')
+
+    # Train model
     model.fit(X_train, Y_train, validation_split=0.2, shuffle=True, nb_epoch=10, verbose=2, callbacks=[early_stop])
 
+    # Save model
     model.save('model.h5')
     print("Saved Model")
 
-
+# Curiosity
 if runTest:
     model = load_model('model.h5')
     evaluate = model.evaluate(X_test, Y_test)
