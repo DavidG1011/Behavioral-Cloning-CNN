@@ -21,7 +21,6 @@ The goals / steps of this project are the following:
 
 ***[Rubric](https://review.udacity.com/#!/rubrics/432/view) Points***
 ---
-###Files Submitted & Code Quality
 
 Files included:
 * model.py containing the script to create and train the model
