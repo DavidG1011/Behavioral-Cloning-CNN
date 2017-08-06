@@ -220,3 +220,8 @@ I have done many test cases where I put the car manually to the outer edge of th
 Putting the car in a clockwise manner around the track, it can still just as easily navigate the entirety of it.
 
 ---
+
+
+***Conclusion:***
+
+I am happy with the way that the model performs, and I hope to do something like this again in the future.
