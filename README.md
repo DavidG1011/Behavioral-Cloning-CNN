@@ -27,7 +27,7 @@ Files included:
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
-* track1.mp4 showing a successful lap of the track in autonomous mode
+* video.mp4 showing a successful lap of the track in autonomous mode
 
 
 ***Running The Code***
